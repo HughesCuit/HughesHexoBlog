@@ -1,0 +1,212 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>storyboard与xib | HugheX</title>
+  <meta name="author" content="HugheX">
+  
+  <meta name="description" content="iOS/JS/PHP/.NET 门门会门门瘟">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="storyboard与xib"/>
+  <meta property="og:site_name" content="HugheX"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">HugheX</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-09-06T06:54:42.000Z"><a href="/2015/09/06/storyboard-e4-b8-8exib/">2015-09-06</a></time>
+      
+      
+  
+    <h1 class="title">storyboard与xib</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <p><span class="s1">//</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">  </span>ViewController1.m</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">  </span>Lesson9_6</span><span class="s2">视图控制器</span><span class="s1">_2</span></p>
+<p><span class="s1">//</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">  </span>Created by rimi on 15/9/6.</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">  </span>Copyright (c) 2015</span><span class="s2">年</span><span class="s1"> HugheX. All rights reserved.</span></p>
+<p><span class="s1">//</span></p>
+<p><span class="s3">#import </span><span class="s1">“ViewController1.h”</span></p>
+<p><span class="s3">@interface</span> <span class="s1">ViewController1</span><span class="s4"> ()</span></p>
+<p><span class="s1">@property</span><span class="s4"> (</span><span class="s1">weak</span><span class="s4">, </span><span class="s1">nonatomic</span><span class="s4">) </span><span class="s1">IBOutlet</span> <span class="s5">UIButton</span><span class="s4"> *backButton;</span></p>
+<p><span class="s1">@end</span></p>
+<p><span class="s1">/**</span></p>
+<p><span class="s1"> *<span class="Apple-converted-space">  </span>StoryBoard</span><span class="s2">与代码的职能分配</span></p>
+<p><span class="s1"> *<span class="Apple-converted-space">  </span>StoryBoard</span><span class="s2">负责基本界面和视图的构建</span></p>
+<p><span class="s6"> *<span class="Apple-converted-space">  </span></span><span class="s1">代码负责关联和方法的执行</span></p>
+<p><span class="s1"> */</span></p>
+<p><span class="s3">@implementation</span><span class="s1"> ViewController1</span></p>
+<p><span class="s1">//1.</span><span class="s2">视图载入</span></p>
+<p><span class="s1">- (</span><span class="s3">void</span><span class="s1">)viewDidLoad {</span></p>
+<p><span class="s1"><span class="Apple-converted-space">    </span></span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span>[</span><span class="s3">super</span> <span class="s1">viewDidLoad</span><span class="s4">];</span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s3">self</span><span class="s4">.</span><span class="s1">view</span><span class="s4">.</span><span class="s1">backgroundColor</span><span class="s4"> = [</span><span class="s1">UIColor</span> <span class="s1">blueColor</span><span class="s4">];</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>UIButton *button = [UIButton buttonWithType:UIButtonTypeSystem];</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>[button setTitle:@”</span><span class="s2">返回</span><span class="s1">“ forState:UIControlStateNormal];</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>button.tintColor = [UIColor whiteColor];</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>[button addTarget:self action:@selector(back:) forControlEvents:UIControlEventTouchUpInside];</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>button.frame = CGRectMake(100, 100, 175, 30);</span></p>
+<p><span class="s1">//<span class="Apple-converted-space">    </span>[self.view addSubview:button];</span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span>[</span><span class="s3">self</span><span class="s4">.</span><span class="s1">backButton</span> <span class="s1">addTarget</span><span class="s4">:</span><span class="s3">self</span> <span class="s1">action</span><span class="s4">:</span><span class="s3">@selector</span><span class="s4">(back:) </span><span class="s1">forControlEvents</span><span class="s4">:</span><span class="s1">UIControlEventTouchUpInside</span><span class="s4">];</span></p>
+<p><span class="s1">}</span></p>
+<p><span class="s1">- (</span><span class="s3">void</span><span class="s1">) back:(</span><span class="s5">UIButton</span><span class="s1">*)sender{</span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span>[</span><span class="s3">self</span> <span class="s1">dismissViewControllerAnimated</span><span class="s4">:</span><span class="s3">YES</span> <span class="s1">completion</span><span class="s4">:</span><span class="s3">nil</span><span class="s4">];</span></p>
+<p><span class="s1">}</span></p>
+<p><span class="s1">- (</span><span class="s3">void</span><span class="s1">)didReceiveMemoryWarning {</span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span>[</span><span class="s3">super</span> <span class="s1">didReceiveMemoryWarning</span><span class="s4">];</span></p>
+<p><span class="s4"><span class="Apple-converted-space">    </span></span><span class="s1">// Dispose of any resources that can be recreated.</span></p>
+<p><span class="s1">}</span></p>
+<p><span class="s1">/*</span></p>
+<p><span class="s1">#pragma mark - Navigation</span></p>
+<p><span class="s1">// In a storyboard-based application, you will often want to do a little preparation before navigation</span></p>
+<p><span class="s1">- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {</span></p>
+<p><span class="s1"><span class="Apple-converted-space">    </span>// Get the new view controller using [segue destinationViewController].</span></p>
+<p><span class="s1"><span class="Apple-converted-space">    </span>// Pass the selected object to the new view controller.</span></p>
+<p><span class="s1">}</span></p>
+<p><span class="s1">*/</span></p>
+<p><span class="s1">@end</span></p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/iOS学习笔记/">iOS学习笔记</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://blog.hughex.com/2015/09/06/storyboard-e4-b8-8exib/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:blog.hughex.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/iOS学习笔记/">iOS学习笔记</a><small>7</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 HugheX
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

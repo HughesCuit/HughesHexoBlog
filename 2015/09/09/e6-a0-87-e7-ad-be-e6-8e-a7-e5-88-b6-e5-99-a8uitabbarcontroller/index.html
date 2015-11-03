@@ -1,0 +1,236 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>标签控制器UITabBarController | HugheX</title>
+  <meta name="author" content="HugheX">
+  
+  <meta name="description" content="iOS/JS/PHP/.NET 门门会门门瘟">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="标签控制器UITabBarController"/>
+  <meta property="og:site_name" content="HugheX"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">HugheX</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2015-09-09T10:36:45.000Z"><a href="/2015/09/09/e6-a0-87-e7-ad-be-e6-8e-a7-e5-88-b6-e5-99-a8uitabbarcontroller/">2015-09-09</a></time>
+      
+      
+  
+    <h1 class="title">标签控制器UITabBarController</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <pre class="wrap:true lang:objc decode:true " title="appDelegate设置">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    _window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    _window.backgroundColor = [UIColor whiteColor];
+
+    UITabBarController *tbc = [[UITabBarController alloc] init];
+    tbc.tabBar.barTintColor = [UIColor colorWithRed:163/255.0f green:63/255.0f blue:58/255.0f alpha:1];
+    tbc.tabBar.tintColor = [UIColor whiteColor];
+    tbc.tabBar.translucent = NO;
+
+    ViewController *vc = [[ViewController alloc] init];
+    vc.title = @"乐行于蜀";
+    vc.tabBarItem.image = [UIImage imageNamed:@"icon_menu_hp_press"];
+    vc.tabBarItem.selectedImage = [UIImage imageNamed:@"icon_menu_hp_selected"];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:vc];
+    nc.navigationBar.barTintColor = [UIColor colorWithRed:163/255.0f green:63/255.0f blue:58/255.0f alpha:1];
+    nc.navigationBar.tintColor = [UIColor whiteColor];
+    nc.navigationBar.translucent = NO;
+    nc.navigationBar.titleTextAttributes = @{
+                                             NSFontAttributeName:[UIFont boldSystemFontOfSize:24],
+                                             NSForegroundColorAttributeName:[UIColor whiteColor]
+                                             };
+
+    ViewController1 *vc1 = [[ViewController1 alloc] init];
+    vc1.title = @"推荐";
+    vc1.tabBarItem.image = [UIImage imageNamed:@"icon_menu_x_press"];
+    vc1.tabBarItem.selectedImage = [UIImage imageNamed:@"icon_menu_x_selected"];
+    UINavigationController *nc1 = [[UINavigationController alloc] initWithRootViewController:vc1];
+    nc1.navigationBar.barTintColor = [UIColor colorWithRed:163/255.0f green:63/255.0f blue:58/255.0f alpha:1];
+    nc1.navigationBar.tintColor = [UIColor whiteColor];
+    nc1.navigationBar.translucent = NO;
+    nc1.navigationBar.titleTextAttributes = @{
+                                             NSFontAttributeName:[UIFont boldSystemFontOfSize:24],
+                                             NSForegroundColorAttributeName:[UIColor whiteColor]
+                                             };
+
+    ViewController2 *vc2 = [[ViewController2 alloc] init];
+    vc2.title = @"景点";
+    vc2.tabBarItem.image = [UIImage imageNamed:@"icon_menu_profile_press"];
+    vc2.tabBarItem.selectedImage = [UIImage imageNamed:@"icon_menu_profile_selected"];
+    UINavigationController *nc2 = [[UINavigationController alloc] initWithRootViewController:vc2];
+    nc2.navigationBar.barTintColor = [UIColor colorWithRed:163/255.0f green:63/255.0f blue:58/255.0f alpha:1];
+    nc2.navigationBar.tintColor = [UIColor whiteColor];
+    nc2.navigationBar.translucent = NO;
+    nc2.navigationBar.titleTextAttributes = @{
+                                             NSFontAttributeName:[UIFont boldSystemFontOfSize:24],
+                                             NSForegroundColorAttributeName:[UIColor whiteColor]
+                                             };
+
+    ViewController3 *vc3 = [[ViewController3 alloc] init];
+    vc3.title = @"更多";
+    vc3.tabBarItem.image = [UIImage imageNamed:@"icon_menu_ihave_press"];
+    vc3.tabBarItem.selectedImage = [UIImage imageNamed:@"icon_menu_ihave_selected"];
+    UINavigationController *nc3 = [[UINavigationController alloc] initWithRootViewController:vc3];
+    nc3.navigationBar.barTintColor = [UIColor colorWithRed:153/255.0f green:63/255.0f blue:58/255.0f alpha:1];
+    nc3.navigationBar.tintColor = [UIColor whiteColor];
+    nc3.navigationBar.translucent = NO;
+    nc3.navigationBar.titleTextAttributes = @{
+                                             NSFontAttributeName:[UIFont boldSystemFontOfSize:24],
+                                             NSForegroundColorAttributeName:[UIColor whiteColor]
+                                             };
+
+    tbc.viewControllers = @[nc,nc1,nc2,nc3];
+
+    _window.rootViewController = tbc;
+
+    [_window makeKeyAndVisible];
+    return YES;
+}</pre>
+
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/iOS学习笔记/">iOS学习笔记</a>
+  </div>
+
+        
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">留言</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://blog.hughex.com/2015/09/09/e6-a0-87-e7-ad-be-e6-8e-a7-e5-88-b6-e5-99-a8uitabbarcontroller/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:blog.hughex.com">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/iOS学习笔记/">iOS学习笔记</a><small>7</small></li>
+  
+  </ul>
+</div>
+
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2015 HugheX
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
