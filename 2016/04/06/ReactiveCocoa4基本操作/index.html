@@ -1,0 +1,652 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="RAC,FRP,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="本文主要提一些在ReactiveCocoa4中主要的操作，主要包括     observe on lift map filter reduce">
+<meta name="keywords" content="RAC,FRP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReactiveCocoa4基本操作">
+<meta property="og:url" content="https://www.hughex.com/2016/04/06/ReactiveCocoa4基本操作/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="本文主要提一些在ReactiveCocoa4中主要的操作，主要包括     observe on lift map filter reduce">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.453Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ReactiveCocoa4基本操作">
+<meta name="twitter:description" content="本文主要提一些在ReactiveCocoa4中主要的操作，主要包括     observe on lift map filter reduce">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> ReactiveCocoa4基本操作 | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ReactiveCocoa4基本操作
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-04-06T13:06:00+09:00" content="2016-04-06">
+              2016-04-06
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/04/06/ReactiveCocoa4基本操作/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/04/06/ReactiveCocoa4基本操作/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p> 本文主要提一些在ReactiveCocoa4中主要的操作，主要包括   </p>
+<ul>
+<li>observe</li>
+<li>on</li>
+<li>lift</li>
+<li>map</li>
+<li>filter</li>
+<li>reduce<a id="more"></a>
+</li>
+</ul>
+<h2 id="对事件流产生副作用-Performing-side-effects-with-event-streams"><a href="#对事件流产生副作用-Performing-side-effects-with-event-streams" class="headerlink" title="对事件流产生副作用(Performing side effects with event streams)"></a>对事件流产生副作用(Performing side effects with event streams)</h2><h3 id="observe-观察"><a href="#observe-观察" class="headerlink" title="observe(观察)"></a>observe(观察)</h3><p><strong><code>Observer(观察者)</code></strong>可以对<strong><code>Signals(信号)</code></strong>进行<strong><code>Observe(观察)</code></strong>操作，观察这个信号将来每次发送的事件。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">signal.observe(<span class="type">Signal</span>.<span class="type">Observer</span> &#123; event <span class="keyword">in</span></span><br><span class="line">  <span class="keyword">switch</span> event &#123;</span><br><span class="line">  <span class="keyword">case</span> <span class="keyword">let</span> .<span class="type">Next</span>(next):</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Next: (next)"</span>)</span><br><span class="line">  <span class="keyword">case</span> <span class="keyword">let</span> .<span class="type">Failed</span>(error):</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Failed: (error)"</span>)</span><br><span class="line">  <span class="keyword">case</span> .<span class="type">Completed</span>:</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Completed"</span>)</span><br><span class="line">  <span class="keyword">case</span> .<span class="type">Interrupted</span>:</span><br><span class="line">   <span class="built_in">print</span>(<span class="string">"Interrupted"</span>)</span><br><span class="line">&#125;&#125;)</span><br></pre></td></tr></table></figure>
+<p>从上面的代码中我们可以看到，事件一共有<strong><code>Next</code></strong>、<strong><code>Failed</code></strong>、<strong><code>Completed</code></strong>、<strong><code>Interrupted</code></strong>四种。当信号发送事件时，就会触发相应的回调。设置回调的方法如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">signal.observeNext &#123; next <span class="keyword">in</span></span><br><span class="line"> <span class="built_in">print</span>(<span class="string">"Next: (next)"</span>) &#125;</span><br><span class="line">signal.observeFailed &#123; error <span class="keyword">in</span></span><br><span class="line"> <span class="built_in">print</span>(<span class="string">"Failed: (error)"</span>)&#125;</span><br><span class="line">signal.observeCompleted &#123; </span><br><span class="line"><span class="built_in">print</span>(<span class="string">"Completed"</span>) &#125;</span><br><span class="line">signal.observeInterrupted &#123; </span><br><span class="line"><span class="built_in">print</span>(<span class="string">"Interrupted"</span>)&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，<strong>你可以只关注你关心的事件而不必观察所有类型。</strong></p>
+<h2 id="注入影响（Injecting-effects）"><a href="#注入影响（Injecting-effects）" class="headerlink" title="注入影响（Injecting effects）"></a>注入影响（Injecting effects）</h2><h3 id="on"><a href="#on" class="headerlink" title="on"></a>on</h3><p>通过<code>on</code>操作可以用来观察<code>SignalProducer</code>,即使没有<strong><code>订阅者</code></strong>也可以触发回调，像下面这样：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> producer = signalProducer </span><br><span class="line">.on(started: &#123; </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Started"</span>) </span><br><span class="line">&#125;, event: &#123; event <span class="keyword">in</span> </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Event: (event)"</span>) </span><br><span class="line">&#125;, failed: &#123; error <span class="keyword">in</span> </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Failed: (error)"</span>)</span><br><span class="line"> &#125;, completed: &#123;</span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Completed"</span>)</span><br><span class="line"> &#125;, interrupted: &#123; </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Interrupted"</span>)</span><br><span class="line"> &#125;, terminated: &#123; </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Terminated"</span>) </span><br><span class="line">&#125;, disposed: &#123; </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Disposed"</span>)</span><br><span class="line"> &#125;, next: &#123; value <span class="keyword">in</span> </span><br><span class="line">  <span class="built_in">print</span>(<span class="string">"Next: (value)"</span>)</span><br><span class="line"> &#125;)</span><br></pre></td></tr></table></figure>
+<p>而与<code>Observer</code>观察<code>Signal</code>不同的是，<code>producer</code>需要在<strong>started</strong>之后才能触发。</p>
+<h2 id="操作符合成-Operator-composition"><a href="#操作符合成-Operator-composition" class="headerlink" title="操作符合成(Operator composition)"></a>操作符合成(Operator composition)</h2><h2 id="lift"><a href="#lift" class="headerlink" title="lift"></a>lift</h2><p>通过<strong><code>lift</code></strong>操作可以将<strong><code>Signal</code></strong>的操作符向上迁移至<strong><code>SignalProducer</code></strong>，产生一个新的<code>SignalProducer</code>，在其产生的每个<code>Signal</code>中应用该操作符。</p>
+<h2 id="Map-映射-、Filter-过滤-、Reduce-聚集-–转换事件流-Transforming-event-streams"><a href="#Map-映射-、Filter-过滤-、Reduce-聚集-–转换事件流-Transforming-event-streams" class="headerlink" title="Map(映射)、Filter(过滤)、Reduce(聚集) –转换事件流(Transforming event streams)"></a>Map(映射)、Filter(过滤)、Reduce(聚集) –转换事件流(Transforming event streams)</h2><h3 id="Map映射"><a href="#Map映射" class="headerlink" title="Map映射"></a>Map映射</h3><p>使用<strong><code>map</code></strong>操作可以将事件流进行转换，将原来的值进行改变等操作后产生一个新的事件流、例如：<br><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> (signal, observer) = <span class="type">Signal</span>&lt;<span class="type">String</span>, <span class="type">NoError</span>&gt;.pipe()</span><br><span class="line">signal</span><br><span class="line"> .<span class="built_in">map</span> &#123; string <span class="keyword">in</span> string.uppercaseString &#125;</span><br><span class="line"> .observeNext &#123; next <span class="keyword">in</span> <span class="built_in">print</span>(next) &#125;</span><br><span class="line">observer.sendNext(<span class="string">"a"</span>) <span class="comment">// Prints A</span></span><br><span class="line">observer.sendNext(<span class="string">"b"</span>) <span class="comment">// Prints B</span></span><br><span class="line">observer.sendNext(<span class="string">"c"</span>) <span class="comment">// Prints C</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Filter过滤"><a href="#Filter过滤" class="headerlink" title="Filter过滤"></a>Filter过滤</h3><p><strong><code>filter</code></strong>顾名思义，可以对信号进行过滤，只传递满足条件的值。比如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let (signal, observer) = Signal&lt;Int, NoError&gt;.pipe()</span><br><span class="line">signal </span><br><span class="line">.filter &#123; number in number % 2 == 0 &#125;</span><br><span class="line"> .observeNext &#123; next in print(next) &#125;</span><br><span class="line">observer.sendNext(1) // Not printed</span><br><span class="line">observer.sendNext(2) // Prints 2</span><br><span class="line">observer.sendNext(3) // Not printed</span><br><span class="line">observer.sendNext(4) // prints 4</span><br></pre></td></tr></table></figure></p>
+<p>在上面的代码中，条件为<code>filter { number in number % 2 == 0 }</code>,表示符合条件的值为能被2整除的数，则<code>1</code>和<code>3</code>被过滤掉了，观察者不会观察到这两个<code>Next</code>事件。</p>
+<h3 id="Aggregate聚集"><a href="#Aggregate聚集" class="headerlink" title="Aggregate聚集"></a>Aggregate聚集</h3><p><strong><code>reduce</code></strong>可以将某一<code>事件</code>的值聚集后合成为一个新值，在输入的流结束后发送。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">let (signal, observer) = Signal&lt;Int, NoError&gt;.pipe()</span><br><span class="line">signal .reduce(1) &#123; $0 * $1 &#125; </span><br><span class="line">.observeNext &#123; next in print(next) &#125;</span><br><span class="line">observer.sendNext(1) // nothing printed</span><br><span class="line">observer.sendNext(2) // nothing printed</span><br><span class="line">observer.sendNext(3) // nothing printed</span><br><span class="line">observer.sendCompleted() // prints 6</span><br></pre></td></tr></table></figure></p>
+<p><strong><code>collect</code></strong>操作可以将一个事件流的值聚合为一个单个的数组值，在输入流结束后发送。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">let (signal, observer) = Signal&lt;Int, NoError&gt;.pipe()</span><br><span class="line"></span><br><span class="line">signal</span><br><span class="line">    .collect()</span><br><span class="line">    .observeNext &#123; next in print(next) &#125;</span><br><span class="line"></span><br><span class="line">observer.sendNext(1)     // nothing printed</span><br><span class="line">observer.sendNext(2)     // nothing printed</span><br><span class="line">observer.sendNext(3)     // nothing printed</span><br><span class="line">observer.sendCompleted()   // prints [1, 2, 3]</span><br></pre></td></tr></table></figure>
+<p>附上一个网址，以图案的方式展示了很多RAC信号的操作<a href="http://neilpa.me/rac-marbles/" target="_blank" rel="noopener">http://neilpa.me/rac-marbles/</a><br>更多资料：<br>    <a href="https://github.com/ReactiveCocoa/ReactiveCocoa/tree/master/Documentation" target="_blank" rel="noopener">ReactiveCocoa 4官方文档</a></p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RAC/" rel="tag">#RAC</a>
+          
+            <a href="/tags/FRP/" rel="tag">#FRP</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/09/RAC-Reactive-Cocoa/" rel="next" title="ReactiveCocoa(RAC)">
+                <i class="fa fa-chevron-left"></i> ReactiveCocoa(RAC)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/07/日本语课堂第一日/" rel="prev" title="日本语课堂第一日">
+                日本语课堂第一日 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/04/06/ReactiveCocoa4基本操作/" data-title="ReactiveCocoa4基本操作" data-url="https://www.hughex.com/2016/04/06/ReactiveCocoa4基本操作/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#对事件流产生副作用-Performing-side-effects-with-event-streams"><span class="nav-number">1.</span> <span class="nav-text">对事件流产生副作用(Performing side effects with event streams)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#observe-观察"><span class="nav-number">1.1.</span> <span class="nav-text">observe(观察)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注入影响（Injecting-effects）"><span class="nav-number">2.</span> <span class="nav-text">注入影响（Injecting effects）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#on"><span class="nav-number">2.1.</span> <span class="nav-text">on</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作符合成-Operator-composition"><span class="nav-number">3.</span> <span class="nav-text">操作符合成(Operator composition)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lift"><span class="nav-number">4.</span> <span class="nav-text">lift</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map-映射-、Filter-过滤-、Reduce-聚集-–转换事件流-Transforming-event-streams"><span class="nav-number">5.</span> <span class="nav-text">Map(映射)、Filter(过滤)、Reduce(聚集) –转换事件流(Transforming event streams)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Map映射"><span class="nav-number">5.1.</span> <span class="nav-text">Map映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Filter过滤"><span class="nav-number">5.2.</span> <span class="nav-text">Filter过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Aggregate聚集"><span class="nav-number">5.3.</span> <span class="nav-text">Aggregate聚集</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

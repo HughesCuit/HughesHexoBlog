@@ -1,0 +1,660 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="技术学习,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="– 基于响应式编程的第三方框架函数响应式编程 (FRP)一种和事件流有关的编程模式，关注导致状态值改变的行为事件，一系列的事件组成了事件流。">
+<meta name="keywords" content="技术学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ReactiveCocoa(RAC)">
+<meta property="og:url" content="https://www.hughex.com/2015/11/09/RAC-Reactive-Cocoa/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="– 基于响应式编程的第三方框架函数响应式编程 (FRP)一种和事件流有关的编程模式，关注导致状态值改变的行为事件，一系列的事件组成了事件流。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.453Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ReactiveCocoa(RAC)">
+<meta name="twitter:description" content="– 基于响应式编程的第三方框架函数响应式编程 (FRP)一种和事件流有关的编程模式，关注导致状态值改变的行为事件，一系列的事件组成了事件流。">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> ReactiveCocoa(RAC) | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                ReactiveCocoa(RAC)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-09T05:45:39+09:00" content="2015-11-09">
+              2015-11-09
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/iOS学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">iOS学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/09/RAC-Reactive-Cocoa/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/09/RAC-Reactive-Cocoa/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="–-基于响应式编程的第三方框架"><a href="#–-基于响应式编程的第三方框架" class="headerlink" title="– 基于响应式编程的第三方框架"></a>– 基于响应式编程的第三方框架</h2><h3 id="函数响应式编程-FRP"><a href="#函数响应式编程-FRP" class="headerlink" title="函数响应式编程 (FRP)"></a>函数响应式编程 (FRP)</h3><pre><code>一种和事件流有关的编程模式，关注导致状态值改变的行为事件，一系列的事件组成了事件流。
+</code></pre><a id="more"></a>
+<h4 id="思想示例-C-A-B-（编程代码）"><a href="#思想示例-C-A-B-（编程代码）" class="headerlink" title="思想示例: C =    A    +    B （编程代码）"></a>思想示例: C =    A    +    B （编程代码）</h4><pre><code>使用FRP ：C值依赖于A和B的值
+程序运行过程中：
+1.初始化 A = 1 ， B = 2 时 C = 3
+2.程序运行过程中，若A值发生改变 A =  2 ，那C也将对应改变   C = 4
+3.运行过程中，若B值发生改变 B = 5 ，那C 对应改变  C = 7 
+</code></pre><h3 id="RAC试图解决的问题"><a href="#RAC试图解决的问题" class="headerlink" title="RAC试图解决的问题"></a>RAC试图解决的问题</h3><ul>
+<li>传统 iOS 开发过程中，状态以及状态之间依赖过多的问题</li>
+<li>传统 MVC 架构的问题：Controller 比较复杂，可测试性差</li>
+<li>提供统一的消息传递机制</li>
+</ul>
+<h3 id="RAC核心概念"><a href="#RAC核心概念" class="headerlink" title="RAC核心概念"></a>RAC核心概念</h3><ul>
+<li>Signal(信号)<ul>
+<li>Completer(完成)</li>
+<li>Error(错误)</li>
+</ul>
+</li>
+<li>Subscribe(订阅)<ul>
+<li>Next（下一步)</li>
+</ul>
+</li>
+</ul>
+<h3 id="RAC基本使用"><a href="#RAC基本使用" class="headerlink" title="RAC基本使用"></a>RAC基本使用</h3><figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">UITextField</span> *textField = [[<span class="built_in">UITextField</span> alloc] init];</span><br><span class="line"><span class="comment">//创建文本信号并订阅，若产生信号则执行next事件(block内容)</span></span><br><span class="line">[textField.rac_textSignal subscribeNext:^(<span class="keyword">id</span> x) &#123;</span><br><span class="line">    <span class="comment">//code...</span></span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<h3 id="RAC-Next事件的限制和内容转化"><a href="#RAC-Next事件的限制和内容转化" class="headerlink" title="RAC Next事件的限制和内容转化"></a>RAC Next事件的限制和内容转化</h3><ul>
+<li>Map(转化)<br>可以将信号内容转化为任意对象</li>
+<li>Filter(过滤)<br>设置Next执行的要求</li>
+</ul>
+<h3 id="RAC相关资源链接"><a href="#RAC相关资源链接" class="headerlink" title="RAC相关资源链接"></a>RAC相关资源链接</h3><ul>
+<li>这样好用的ReactiveCocoa，根本停不下来<br><a href="http://www.cocoachina.com/ios/20150817/13071.htm" target="_blank" rel="noopener">http://www.cocoachina.com/ios/20150817/13071.htm</a></li>
+<li>ReactiveCocoa2实战<br><a href="http://www.cocoachina.com/industry/20140609/8737.html" target="_blank" rel="noopener">http://www.cocoachina.com/industry/20140609/8737.html</a></li>
+<li>ReactiveCocoa2 源码浅析<br><a href="http://www.cocoachina.com/ios/20150827/13252.html" target="_blank" rel="noopener">http://www.cocoachina.com/ios/20150827/13252.html</a></li>
+<li>ReactiveCocoa底层实现解析<br><a href="http://blog.sunnyxx.com/tags/Reactive%20Cocoa%20Tutorial/" target="_blank" rel="noopener">http://blog.sunnyxx.com/tags/Reactive%20Cocoa%20Tutorial/</a></li>
+<li>Limboy博客，内容质量高<br><a href="http://limboy.me" target="_blank" rel="noopener">http://limboy.me</a></li>
+<li>细说ReactiveCocoa的冷信号与热信号(系列文章)<br><a href="http://tech.meituan.com/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1.html" target="_blank" rel="noopener">http://tech.meituan.com/talk-about-reactivecocoas-cold-signal-and-hot-signal-part-1.html</a></li>
+</ul>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/技术学习/" rel="tag">#技术学习</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/06/Git的使用/" rel="next" title="Git的使用">
+                <i class="fa fa-chevron-left"></i> Git的使用
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/06/ReactiveCocoa4基本操作/" rel="prev" title="ReactiveCocoa4基本操作">
+                ReactiveCocoa4基本操作 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/09/RAC-Reactive-Cocoa/" data-title="ReactiveCocoa(RAC)" data-url="https://www.hughex.com/2015/11/09/RAC-Reactive-Cocoa/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#–-基于响应式编程的第三方框架"><span class="nav-number">1.</span> <span class="nav-text">– 基于响应式编程的第三方框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#函数响应式编程-FRP"><span class="nav-number">1.1.</span> <span class="nav-text">函数响应式编程 (FRP)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#思想示例-C-A-B-（编程代码）"><span class="nav-number">1.1.1.</span> <span class="nav-text">思想示例: C =    A    +    B （编程代码）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC试图解决的问题"><span class="nav-number">1.2.</span> <span class="nav-text">RAC试图解决的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC核心概念"><span class="nav-number">1.3.</span> <span class="nav-text">RAC核心概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC基本使用"><span class="nav-number">1.4.</span> <span class="nav-text">RAC基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC-Next事件的限制和内容转化"><span class="nav-number">1.5.</span> <span class="nav-text">RAC Next事件的限制和内容转化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RAC相关资源链接"><span class="nav-number">1.6.</span> <span class="nav-text">RAC相关资源链接</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

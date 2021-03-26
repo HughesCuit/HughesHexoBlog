@@ -1,0 +1,876 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Docker,React,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="原文：Dockerizing a React App Docker是一个可以帮助你加速开发和部署流程的容器工具。如果你使用微服务架构，Docker可以帮助你将各种小型的独立服务更方便地整合起来。并且因为你可以复制你本地的生产环境，它还可以帮你排除因为环境不同所带来的bug。 这个教程演示了怎样使用Create React App将一个React应用Docker化。我们十分关注的点有-  配置一个具">
+<meta name="keywords" content="Docker,React">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]Docker化你的React应用">
+<meta property="og:url" content="https://www.hughex.com/2019/07/03/译-Docker化你的React应用/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="原文：Dockerizing a React App Docker是一个可以帮助你加速开发和部署流程的容器工具。如果你使用微服务架构，Docker可以帮助你将各种小型的独立服务更方便地整合起来。并且因为你可以复制你本地的生产环境，它还可以帮你排除因为环境不同所带来的bug。 这个教程演示了怎样使用Create React App将一个React应用Docker化。我们十分关注的点有-  配置一个具">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://mherman.org/assets/img/blog/docker-logo.png">
+<meta property="og:updated_time" content="2019-07-03T01:53:50.205Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]Docker化你的React应用">
+<meta name="twitter:description" content="原文：Dockerizing a React App Docker是一个可以帮助你加速开发和部署流程的容器工具。如果你使用微服务架构，Docker可以帮助你将各种小型的独立服务更方便地整合起来。并且因为你可以复制你本地的生产环境，它还可以帮你排除因为环境不同所带来的bug。 这个教程演示了怎样使用Create React App将一个React应用Docker化。我们十分关注的点有-  配置一个具">
+<meta name="twitter:image" content="https://mherman.org/assets/img/blog/docker-logo.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> [译]Docker化你的React应用 | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                [译]Docker化你的React应用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2019-07-03T11:46:38+09:00" content="2019-07-03">
+              2019-07-03
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/技术文档/" itemprop="url" rel="index">
+                    <span itemprop="name">技术文档</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2019/07/03/译-Docker化你的React应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2019/07/03/译-Docker化你的React应用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>原文：<a href="https://mherman.org/blog/dockerizing-a-react-app/" target="_blank" rel="noopener">Dockerizing a React App</a></p>
+<p><a href="https://www.docker.com/" target="_blank" rel="noopener">Docker</a>是一个可以帮助你加速开发和部署流程的容器工具。如果你使用微服务架构，Docker可以帮助你将各种小型的独立服务更方便地整合起来。并且因为你可以复制你本地的生产环境，它还可以帮你排除因为环境不同所带来的bug。</p>
+<p>这个教程演示了怎样使用<a href="https://facebook.github.io/create-react-app/" target="_blank" rel="noopener">Create React App</a>将一个React应用Docker化。我们十分关注的点有-</p>
+<ol>
+<li>配置一个具有代码热重启功能的开发环境</li>
+<li>使用多阶段构建配置一个准生产环境镜像[注：原文为production-ready image]</li>
+</ol>
+<p><img src="https://mherman.org/assets/img/blog/docker-logo.png" alt></p>
+<p><em>更新:</em></p>
+<ul>
+<li>May 2019:<ul>
+<li>更新到最新版本的Docker, Node, React, 和 Nginx.</li>
+<li>增加了对各个Docker 命令和标记的解释.</li>
+<li>根据读者评论和反馈添加了许多注释.</li>
+</ul>
+</li>
+<li>Feb 2018:<ul>
+<li>更新到最新版本的Node, React, 和 Nginx.</li>
+<li>增加匿名卷.</li>
+<li>增加了关于配置 Nginx 来配合使用 React Router 的详细内容.</li>
+<li>增加了使用多阶段构建生产环境的部分.</li>
+</ul>
+</li>
+</ul>
+<p><em>本文使用的软件版本:</em></p>
+<ul>
+<li>Docker v18.09.2</li>
+<li>Create React App v3.0.1</li>
+<li>Node v12.2.0</li>
+</ul>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><a href="#项目安装">项目安装</a></li>
+<li><a href="#Docker">Docker</a></li>
+<li><a href="#Docker-Machine">Docker Machine</a></li>
+<li><a href="#生产环境">生产环境</a></li>
+<li><a href="#React-Router-和-Nginx">React Router 和 Nginx</a></li>
+<li><a href="#接下来">接下来</a></li>
+</ul>
+<h2 id="项目安装"><a href="#项目安装" class="headerlink" title="项目安装"></a>项目安装</h2><p>全局安装 <a href="https://github.com/facebookincubator/create-react-app" target="_blank" rel="noopener">Create React App</a>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install -g create-react-app@3.0.1</span><br></pre></td></tr></table></figure>
+<p>生成一个新应用:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ create-react-app sample</span><br><span class="line">$ cd sample</span><br></pre></td></tr></table></figure>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>在项目的根目录下添加一个 <em>Dockerfile</em> :</p>
+<pre><code># 基础镜像
+FROM node:12.2.0-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 把 `/app/node_modules/.bin` 加到$PATH中
+ENV PATH /app/node_modules/.bin:$PATH
+
+# 安装并缓存应用依赖
+COPY package.json /app/package.json
+RUN npm install --silent
+RUN npm install react-scripts@3.0.1 -g --silent
+
+# 启动应用
+CMD [&quot;npm&quot;, &quot;start&quot;]
+</code></pre><blockquote>
+<p>如果你需要的话，你可以通过<code>--silent</code>选项将NPM的输出过滤掉。通常不推荐这样，因为它会把错误输出也给屏蔽掉。随时注意这个可以避免在调试时浪费太多时间</p>
+</blockquote>
+<p>新建一个<em>.dockerignore</em>:</p>
+<pre><code>node_modules
+</code></pre><p>这将加速Docker构建过程，因为我们的本地依赖项将不会发送到Docker守护程序。</p>
+<p>构建并标记这个Docker镜像:</p>
+<pre><code>$ docker build -t sample:dev .
+</code></pre><p>构建完成之后启动这个容器:</p>
+<pre><code>$ docker run -v ${PWD}:/app -v /app/node_modules -p 3001:3000 --rm sample:dev
+</code></pre><blockquote>
+<p>如果你得到一个<code>&quot;ENOENT: no such file or directory, open &#39;/app/package.json&quot;.</code>这样的错误, 你可能需要添加一个额外的卷: <code>-v /app/package.json</code>.</p>
+</blockquote>
+<p>这里发生了什么?</p>
+<ol>
+<li><a href="https://docs.docker.com/engine/reference/commandline/run/" target="_blank" rel="noopener">docker run</a> 的命令用我们刚刚创建的Docker镜像创建了一个容器实例,然后将它跑起来.</li>
+<li><p><code>-v ${PWD}:/app</code> 将代码装载至容器中的 “/app”目录.</p>
+<blockquote>
+<p><code>{PWD}</code>在Windows下可能没用. 可以在<a href="https://stackoverflow.com/questions/41485217/mount-current-directory-as-a-volume-in-docker-on-windows-10" target="_blank" rel="noopener">这里</a>查看Stack Overflow上的具体问题.</p>
+</blockquote>
+</li>
+<li><p>为了使用容器中的“node_modules”目录, 我们再配置一个卷: <code>-v /app/node_modules</code>. 你现在就可以删除本地的 “node_modules” 目录了.</p>
+</li>
+<li><p><code>-p 3001:3000</code> 将3000端口暴露给同一个网络下的Docker容器 (用作容器间通信) 并且将3001端口暴露给主机.</p>
+<blockquote>
+<p>在Stack Overflow上查看<a href="https://stackoverflow.com/questions/22111060/what-is-the-difference-between-expose-and-publish-in-docker" target="_blank" rel="noopener">该问题</a>以获取更多信息。</p>
+</blockquote>
+</li>
+<li><p>最后, <code>--rm</code> 在容器退出后<a href="https://docs.docker.com/engine/reference/run/#clean-up---rm" target="_blank" rel="noopener">移除</a>这个容器和卷.</p>
+</li>
+</ol>
+<p>打开浏览器访问<a href="http://localhost:3001/" target="_blank" rel="noopener">http://localhost:3001/</a> 就可以访问这个应用了. 尝试在编辑器中对 <code>App</code> 组建上进行修改， 就能发现应用已经热重启了。在完成后关闭服务器。</p>
+<blockquote>
+<p>你加了<code>-it</code>选项时发生了什么?</p>
+<pre><code>$ docker run -it -v ${PWD}:/app -v /app/node_modules -p 3001:3000 --rm sample:dev
+</code></pre><p>按照你的理解自己验证一下.</p>
+</blockquote>
+<p>希望使用 <a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose</a>吗? 在项目根目录新增一个 <em>docker-compose.yml</em> 文件:</p>
+<pre><code>version: &apos;3.7&apos;
+
+services:
+
+  sample:
+    container_name: sample
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - &apos;.:/app&apos;
+      - &apos;/app/node_modules&apos;
+    ports:
+      - &apos;3001:3000&apos;
+    environment:
+      - NODE_ENV=development
+</code></pre><p>注意卷的配置， 如果没有这个 <a href="https://success.docker.com/article/Different_Types_of_Volumes" target="_blank" rel="noopener">匿名</a> 卷 (<code>&#39;/app/node_modules&#39;</code>), _node_modules_ 这个目录在运行时就会被你项目中的那个目录覆盖。换句话说, 会发生下面的事:</p>
+<ul>
+<li><em>Build</em> - <code>node_modules</code>这个目录在镜像中被创建。</li>
+<li><em>Run</em> - 当前的目录被装载至容器中, 覆盖掉我们在Build时创建的<code>node_modules</code>目录.</li>
+</ul>
+<p>构建镜像并运行容器:</p>
+<pre><code>$ docker-compose up -d --build
+</code></pre><p>再次确认应用运行成功并且可以热重启，然后在继续之前停止容器:</p>
+<pre><code>$ docker-compose stop
+</code></pre><blockquote>
+<p><em>Windows用户</em>: 在配置卷时遇到问题的话，可以查看下列资源:</p>
+<ol>
+<li><a href="https://rominirani.com/docker-on-windows-mounting-host-directories-d96f3f056a2c" target="_blank" rel="noopener">Docker on Windows–Mounting Host Directories</a></li>
+<li><a href="https://blogs.msdn.microsoft.com/stevelasker/2016/06/14/configuring-docker-for-windows-volumes/" target="_blank" rel="noopener">Configuring Docker for Windows Shared Drives</a></li>
+</ol>
+<p>你也可以在Docker Compose的evironment部分中添加 <code>COMPOSE_CONVERT_WINDOWS_PATHS=1</code>。查看 <a href="https://docs.docker.com/compose/env-file/" target="_blank" rel="noopener">Declare default environment variables in file</a> 教程以获取更多信息.</p>
+</blockquote>
+<h2 id="Docker-Machine"><a href="#Docker-Machine" class="headerlink" title="Docker Machine"></a>Docker Machine</h2><p>如果要在 <a href="https://docs.docker.com/machine/" target="_blank" rel="noopener">Docker Machine</a> 和 <a href="https://docs.docker.com/machine/get-started/" target="_blank" rel="noopener">VirtualBox</a>上搭建这个热重启服务，你需要通过<a href="https://github.com/paulmillr/chokidar" target="_blank" rel="noopener">chokidar</a>来<a href="https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#troubleshooting" target="_blank" rel="noopener">启用</a>一个轮询机制  (封装了 <code>fs.watch</code>, <code>fs.watchFile</code>, 和 <code>fsevents</code>).</p>
+<p>创建一个新Machine:</p>
+<pre><code>$ docker-machine create -d virtualbox sample
+$ docker-machine env sample
+$ eval $(docker-machine env sample)
+</code></pre><p>拿到IP:</p>
+<pre><code>$ docker-machine ip sample
+</code></pre><p>然后构建镜像并运行容器:</p>
+<pre><code>$ docker build -t sample:dev .
+
+$ docker run -v ${PWD}:/app -v /app/node_modules -p 3001:3000 --rm sample:dev
+</code></pre><p>访问<a href="http://DOCKER_MACHINE_IP:3001/" target="_blank" rel="noopener">http://DOCKER_MACHINE_IP:3001/</a>再测试一遍应用， (注意将 <code>DOCKER_MACHINE_IP</code> 替换成你真正的Docker Machine的IP). 并且发现热重启 _不再_ 工作. 用Docker Compose也一样。</p>
+<p>要重新启用热重启, 得加一个环境变量: <code>CHOKIDAR_USEPOLLING=true</code>.</p>
+<pre><code>$ docker run -v ${PWD}:/app -v /app/node_modules -p 3001:3000 -e CHOKIDAR_USEPOLLING=true --rm sample:dev
+</code></pre><p>再测试一次. 确认热重启又工作了.</p>
+<p>更新后的 <em>docker-compose.yml</em> 文件:</p>
+<pre><code>version: &apos;3.7&apos;
+
+services:
+
+  sample:
+    container_name: sample
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - &apos;.:/app&apos;
+      - &apos;/app/node_modules&apos;
+    ports:
+      - &apos;3001:3000&apos;
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+</code></pre><h2 id="生产环境"><a href="#生产环境" class="headerlink" title="生产环境"></a>生产环境</h2><p>创建一个单独的Dockerfile命名为 <em>Dockerfile-prod</em>:</p>
+<pre><code># build environment
+FROM node:12.2.0-alpine as build
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json /app/package.json
+RUN npm install --silent
+RUN npm install react-scripts@3.0.1 -g --silent
+COPY . /app
+RUN npm run build
+
+# production environment
+FROM nginx:1.16.0-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
+</code></pre><p>这里我们利用了 <a href="https://docs.docker.com/engine/userguide/eng-image/multistage-build/" target="_blank" rel="noopener">多阶段构建</a> 模式来创建一个临时镜像，用来构建已经为生产环境准备的React static文件，然后复制到生产镜像中. 然后这个临时构建镜像和原始文件和目录一起被丢弃，就生成了一个精简后的，生产环境镜像。</p>
+<blockquote>
+<p>通过这篇博客可以更多的了解多阶段构建 <a href="https://blog.alexellis.io/mutli-stage-docker-builds/" target="_blank" rel="noopener">Builder pattern vs. Multi-stage builds in Docker</a>.</p>
+</blockquote>
+<p>使用生产环境Dockerfile, 构建并标记镜像:</p>
+<pre><code>$ docker build -f Dockerfile-prod -t sample:prod .
+</code></pre><p>运行容器:</p>
+<pre><code>$ docker run -it -p 80:80 --rm sample:prod
+</code></pre><p>如果你还在用同一个Docker Machine的话, 使用浏览器访问 <a href="http://DOCKER_MACHINE_IP" target="_blank" rel="noopener">http://DOCKER_MACHINE_IP</a>。</p>
+<p>使用一个新的Docker Compose文件命名为 <em>docker-compose-prod.yml</em>:</p>
+<pre><code>version: &apos;3.7&apos;
+
+services:
+
+  sample-prod:
+    container_name: sample-prod
+    build:
+      context: .
+      dockerfile: Dockerfile-prod
+    ports:
+      - &apos;80:80&apos;
+</code></pre><p>运行容器:</p>
+<pre><code>$ docker-compose -f docker-compose-prod.yml up -d --build
+</code></pre><p>再用浏览器测试一次. 然后就完成了, 然后销毁Docker Machine:</p>
+<pre><code>$ eval $(docker-machine env -u)
+$ docker-machine rm sample
+</code></pre><h2 id="React-Router-和-Nginx"><a href="#React-Router-和-Nginx" class="headerlink" title="React Router 和 Nginx"></a>React Router 和 Nginx</h2><p>如果你使用 <a href="https://reacttraining.com/react-router/" target="_blank" rel="noopener">React Router</a>, 那么你需要再构建时修改默认的nginx配置:</p>
+<pre><code>RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d
+</code></pre><p>把这个修改加入到 <em>Dockerfile-prod</em>:</p>
+<pre><code># build environment
+FROM node:12.2.0-alpine as build
+WORKDIR /app
+ENV PATH /app/node_modules/.bin:$PATH
+COPY package.json /app/package.json
+RUN npm install --silent
+RUN npm install react-scripts@3.0.1 -g --silent
+COPY . /app
+RUN npm run build
+
+# production environment
+FROM nginx:1.16.0-alpine
+COPY --from=build /app/build /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx/nginx.conf /etc/nginx/conf.d
+EXPOSE 80
+CMD [&quot;nginx&quot;, &quot;-g&quot;, &quot;daemon off;&quot;]
+</code></pre><p>创建以下的目录并且添加 <em>nginx.conf</em> 这个文件:</p>
+<pre><code>└── nginx
+    └── nginx.conf
+</code></pre><p><em>nginx.conf</em>:</p>
+<pre><code>server {
+
+  listen 80;
+
+  location / {
+    root   /usr/share/nginx/html;
+    index  index.html index.htm;
+    try_files $uri $uri/ /index.html;
+  }
+
+  error_page   500 502 503 504  /50x.html;
+
+  location = /50x.html {
+    root   /usr/share/nginx/html;
+  }
+
+}
+</code></pre><h2 id="接下来"><a href="#接下来" class="headerlink" title="接下来"></a>接下来</h2><p>现在, 你就可以将React添加到开发和生产环境的更大的Docker驱动的项目中使用了. 如果你想学习使用React和Docker来构建和测试微服务, 请访问 <a href="https://testdriven.io/" target="_blank" rel="noopener">Microservices with Docker, Flask, and React</a> 教程.</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Docker/" rel="tag">#Docker</a>
+          
+            <a href="/tags/React/" rel="tag">#React</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/30/在ESXi6.5上安装macOS 10.13.6虚拟系统/" rel="next" title="在ESXi6.5上安装macOS 10.13.6虚拟系统">
+                <i class="fa fa-chevron-left"></i> 在ESXi6.5上安装macOS 10.13.6虚拟系统
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/04/浅尝Koa-——-基于Node-JS的下一代Web框架/" rel="prev" title="浅尝Koa —— 基于Node.JS的下一代Web框架">
+                浅尝Koa —— 基于Node.JS的下一代Web框架 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2019/07/03/译-Docker化你的React应用/" data-title="[译]Docker化你的React应用" data-url="https://www.hughex.com/2019/07/03/译-Docker化你的React应用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#目录"><span class="nav-number">1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#项目安装"><span class="nav-number">2.</span> <span class="nav-text">项目安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker"><span class="nav-number">3.</span> <span class="nav-text">Docker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Docker-Machine"><span class="nav-number">4.</span> <span class="nav-text">Docker Machine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生产环境"><span class="nav-number">5.</span> <span class="nav-text">生产环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Router-和-Nginx"><span class="nav-number">6.</span> <span class="nav-text">React Router 和 Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#接下来"><span class="nav-number">7.</span> <span class="nav-text">接下来</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

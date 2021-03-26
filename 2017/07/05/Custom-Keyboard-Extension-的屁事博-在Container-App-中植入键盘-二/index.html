@@ -1,0 +1,656 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Keyboard,键盘,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="转开始着手现有输入法植入工作，亟待解决的问题有下面几个：  系统调用输入法时KeyboardViewController如何加载 能否(如何)将KeyboardViewController的视图加载到应用程序的视图控制器 Keyboard如何(是否需要)与输入框进行关联  下面来一一解决： 系统调用键盘上一张经典图 关于Extension、Container App、Host App这三者的关系这">
+<meta name="keywords" content="Keyboard,键盘">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)">
+<meta property="og:url" content="https://www.hughex.com/2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="转开始着手现有输入法植入工作，亟待解决的问题有下面几个：  系统调用输入法时KeyboardViewController如何加载 能否(如何)将KeyboardViewController的视图加载到应用程序的视图控制器 Keyboard如何(是否需要)与输入框进行关联  下面来一一解决： 系统调用键盘上一张经典图 关于Extension、Container App、Host App这三者的关系这">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/6b7d44cfgy1fh7yo4r6z6j21170s9q3z.jpg">
+<meta property="og:image" content="https://ws1.sinaimg.cn/large/6b7d44cfgy1fh7zfyf2lsj20qx0ifdi8.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/6b7d44cfgy1fh88zea8k3j20r41h8jup.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/6b7d44cfgy1fh8azll0zij20r41h840n.jpg">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.452Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)">
+<meta name="twitter:description" content="转开始着手现有输入法植入工作，亟待解决的问题有下面几个：  系统调用输入法时KeyboardViewController如何加载 能否(如何)将KeyboardViewController的视图加载到应用程序的视图控制器 Keyboard如何(是否需要)与输入框进行关联  下面来一一解决： 系统调用键盘上一张经典图 关于Extension、Container App、Host App这三者的关系这">
+<meta name="twitter:image" content="https://ws1.sinaimg.cn/large/6b7d44cfgy1fh7yo4r6z6j21170s9q3z.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二) | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-07-05T11:14:00+09:00" content="2017-07-05">
+              2017-07-05
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="转"><a href="#转" class="headerlink" title="转"></a>转</h1><p>开始着手现有输入法植入工作，亟待解决的问题有下面几个：</p>
+<ol>
+<li>系统调用输入法时<strong>KeyboardViewController</strong>如何加载</li>
+<li>能否(如何)将<strong>KeyboardViewController</strong>的视图加载到应用程序的视图控制器</li>
+<li><strong>Keyboard</strong>如何(是否需要)与输入框进行关联</li>
+</ol>
+<p>下面来一一解决：</p>
+<h2 id="系统调用键盘"><a href="#系统调用键盘" class="headerlink" title="系统调用键盘"></a>系统调用键盘</h2><p>上一张经典图<br><img src="https://ws1.sinaimg.cn/large/6b7d44cfgy1fh7yo4r6z6j21170s9q3z.jpg" alt></p>
+<p>关于<code>Extension</code>、<code>Container App</code>、<code>Host App</code>这三者的关系这里不再赘述，网上很多资料。这里体现了一件事情就是：<strong>系统在调用键盘时，Keyboard是没有加载在应用程序keyWindow中的，</strong>而是在一个新的名叫<code>UIRemoteKeyboardWindow</code>的窗口中</p>
+<p><img src="https://ws1.sinaimg.cn/large/6b7d44cfgy1fh7zfyf2lsj20qx0ifdi8.jpg" alt="系统日语输入法在App中加载"></p>
+<h2 id="应用程序视图中加载键盘"><a href="#应用程序视图中加载键盘" class="headerlink" title="应用程序视图中加载键盘"></a>应用程序视图中加载键盘</h2><p>在以前的项目中，当我们希望系统弹出键盘时一般使用<code>textField.becomeFirstResponder()</code>这样的方法，让输入框成为第一响应者来实现。现在我们需要的是指定一个我们项目中已经实现过的<code>KeyboardViewController</code>来弹出，而不是通过系统调用键盘，然后让用户切换过去。</p>
+<p>调查过后锁定了几个东西：<code>UITextField.inputView</code>、<code>UIResponder.inputViewController</code>、<br>实验发现，不论是设置<code>inputView</code>为<code>KeyboardViewController</code>的<code>view</code>或者是重载<code>UITextField</code>的<code>inputViewController</code>设置为<code>KeyboardViewController</code>都可以实现在<code>UIRemoteKeyboardWindow</code>窗口中调起该键盘。</p>
+<p>但这样调起的键盘无法在画面中获得，也无法设置画面约束等，仅仅是一个调起指定实现的键盘的方法，局限性太大。</p>
+<p>既然<code>KeyboardViewController</code>的父类<code>UIInputViewController</code>是基于<code>UIViewController</code>的，那么我们能不能直接将它作为<strong>子VC</strong>并将视图加入应用程序视图中呢?</p>
+<p>好像没啥问题</p>
+<p>最简单实现<code>childViewController</code>的方法就是直接使用<code>storyboard</code>中的<code>Container View</code>。拖上容器，设置约束，将子VC类型设置为我们的<code>KeyboardViewController</code>，直接运行，键盘就躺在画面中等着我们了。</p>
+<h2 id="关联输入框"><a href="#关联输入框" class="headerlink" title="关联输入框"></a>关联输入框</h2><p>这时候，点击输入框，诶？</p>
+<p><img src="http://ww1.sinaimg.cn/large/6b7d44cfgy1fh88zea8k3j20r41h8jup.jpg" alt></p>
+<p>怎么又弹出一个新键盘出来了，先不管，点击收起弹出来的键盘，在我们的子VC的键盘上操作，诶？好像可以直接输入到输入框上？！似乎：<strong>加载在视图中的UIInputView</strong>，输出文字会自动输入到当前的<code>FirstResponder</code>中，而不用做其他关联</p>
+<h1 id="合"><a href="#合" class="headerlink" title="合"></a>合</h1><p>这似乎是一个比较好的实现，不过我们还得解决一下输入框获得焦点时系统弹出键盘的问题。这时，我们的<code>inputView</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">textField.inputView = <span class="type">UIView</span>()</span><br></pre></td></tr></table></figure>
+<p>或者直接重载<code>inputViewController</code>、<code>inputView</code></p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">UITextField</span> </span>&#123;</span><br><span class="line">	<span class="comment">//重载应用中所有textField的inputViewController</span></span><br><span class="line">    <span class="keyword">open</span> <span class="keyword">override</span> <span class="keyword">var</span> inputViewController: <span class="type">UIInputViewController?</span>&#123;</span><br><span class="line">        <span class="keyword">get</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="type">UIInputViewController</span>()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTextField</span>: <span class="title">UITextField</span> </span>&#123;</span><br><span class="line">    <span class="built_in">lazy</span> <span class="keyword">var</span> emptyInputView = <span class="type">UIView</span>()</span><br><span class="line">    <span class="comment">//重载inputView</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">var</span> inputView: <span class="type">UIView?</span> &#123;</span><br><span class="line">        <span class="keyword">set</span>&#123;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">get</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> emptyInputView</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="http://ww1.sinaimg.cn/large/6b7d44cfgy1fh8azll0zij20r41h840n.jpg" alt></p>
+<p>完美√</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Keyboard/" rel="tag">#Keyboard</a>
+          
+            <a href="/tags/键盘/" rel="tag">#键盘</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/" rel="next" title="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）">
+                <i class="fa fa-chevron-left"></i> Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/18/iOS-3D-Touch-Shortcut-开发/" rel="prev" title="iOS 3D Touch Shortcut 开发">
+                iOS 3D Touch Shortcut 开发 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/" data-title="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)" data-url="https://www.hughex.com/2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#转"><span class="nav-number">1.</span> <span class="nav-text">转</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#系统调用键盘"><span class="nav-number">1.1.</span> <span class="nav-text">系统调用键盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用程序视图中加载键盘"><span class="nav-number">1.2.</span> <span class="nav-text">应用程序视图中加载键盘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关联输入框"><span class="nav-number">1.3.</span> <span class="nav-text">关联输入框</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#合"><span class="nav-number">2.</span> <span class="nav-text">合</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

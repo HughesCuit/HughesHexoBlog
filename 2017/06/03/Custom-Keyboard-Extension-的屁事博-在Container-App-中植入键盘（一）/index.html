@@ -1,0 +1,638 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Keyboard,奇葩需求,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="起亲爱的甲方在键盘的Container App里面做一个「学习模块」，想要就是在Container App里面让用户学习使用键盘的模式。这是基于我们keyboard Extension本身功能已经健全(绝对没有一丝的设计不合理，也不是因为输入法学习成本高，只是为某些LowB用户提供的智商扶贫计划😉)。 基于这样的需求，我们不能简单给用户一个输入框，让用户自己切换输入法在那练练练，而是把键盘直接植">
+<meta name="keywords" content="Keyboard,奇葩需求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）">
+<meta property="og:url" content="https://www.hughex.com/2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="起亲爱的甲方在键盘的Container App里面做一个「学习模块」，想要就是在Container App里面让用户学习使用键盘的模式。这是基于我们keyboard Extension本身功能已经健全(绝对没有一丝的设计不合理，也不是因为输入法学习成本高，只是为某些LowB用户提供的智商扶贫计划😉)。 基于这样的需求，我们不能简单给用户一个输入框，让用户自己切换输入法在那练练练，而是把键盘直接植">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.452Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）">
+<meta name="twitter:description" content="起亲爱的甲方在键盘的Container App里面做一个「学习模块」，想要就是在Container App里面让用户学习使用键盘的模式。这是基于我们keyboard Extension本身功能已经健全(绝对没有一丝的设计不合理，也不是因为输入法学习成本高，只是为某些LowB用户提供的智商扶贫计划😉)。 基于这样的需求，我们不能简单给用户一个输入框，让用户自己切换输入法在那练练练，而是把键盘直接植">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一） | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-06-03T17:46:00+09:00" content="2017-06-03">
+              2017-06-03
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="起"><a href="#起" class="headerlink" title="起"></a>起</h1><p>亲爱的甲方在键盘的<code>Container App</code>里面做一个<strong>「学习模块」</strong>，想要就是在<code>Container App</code>里面让用户学习使用键盘的模式。这是基于我们keyboard Extension本身功能已经健全(绝对没有一丝的设计不合理，也不是因为输入法学习成本高，只是为某些LowB用户提供的智商扶贫计划😉)。</p>
+<p>基于这样的需求，我们不能简单给用户一个输入框，让用户自己切换输入法在那练练练，而是把键盘直接植入到应用程序画面中，用户进入画面中，我们的键盘就已经在画面中stand by了。</p>
+<h1 id="承"><a href="#承" class="headerlink" title="承"></a>承</h1><p>项目开始调查，我开始了植入方案的研究。项目会议时，我提出了几个方案： </p>
+<ol>
+<li>将现有的输入法代码<code>加入</code>容器App的<strong>编译</strong>，并在容器中以某种方式实现<strong>加载</strong>该输入法，并实现<strong>联动</strong>输入框</li>
+<li>在容器App中<strong>重新实现(Copy)</strong>一套输入法逻辑，就像普通的自定义轮子一样加载View，并不与输入法的一套规则产生联系</li>
+<li>告诉客户：这个方案太贵了，原因如下。。。</li>
+</ol>
+<h2 id="方案选择："><a href="#方案选择：" class="headerlink" title="方案选择："></a>方案选择：</h2><h3 id="方案1"><a href="#方案1" class="headerlink" title="方案1"></a>方案1</h3><p>当然是最好的方案，优点是<strong>完全重用</strong>现有输入法逻辑，与现有产品在功能式样上保持高度一致，将来需求的变更可以同步反映，代码量少，大量的代码规模都可以用于业务逻辑✌️。但缺点也很明显：<strong>可行性未知</strong>，<strong>国内相关经验少</strong>，相关资料几乎为0，仅在<a href="https://stackoverflow.com/" target="_blank" rel="noopener">栈溢出论坛</a>上有少量的有用信息。</p>
+<h3 id="方案2"><a href="#方案2" class="headerlink" title="方案2"></a>方案2</h3><p>一个泥瓦匠刚刚学会砌墙，就希望拿手上这点手艺，修建高楼大厦，用这种无限使用于未来的方法，置换体内星辰河流。这个方法无疑是最体力活、最屌丝的方法：大量重复逻辑的编写，工匠之心囿于界面与接口；无法反映将来输入法需求变更的修改；随着项目规模扩大，它将难以维护。但就目前来说，它具有高可行性，能实现现阶段的客户需求。</p>
+<h3 id="方案3"><a href="#方案3" class="headerlink" title="方案3"></a>方案3</h3><p>却下，客户说：有的是钱。</p>
+<p>讨论的结果是，先前期调查<strong>方案1</strong>的可行性，并尝试实现植入，如果可行，便上马，如若不行或短时间内不行，还有<strong>方案2</strong>作为备胎方案，暂时放下你的破情怀，先面向需求编程再说。</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Keyboard/" rel="tag">#Keyboard</a>
+          
+            <a href="/tags/奇葩需求/" rel="tag">#奇葩需求</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/19/Swift进阶-结构体与类/" rel="next" title="Swift进阶--结构体与类（一）">
+                <i class="fa fa-chevron-left"></i> Swift进阶--结构体与类（一）
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/" rel="prev" title="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)">
+                Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/" data-title="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘（一）" data-url="https://www.hughex.com/2017/06/03/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘（一）/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#起"><span class="nav-number">1.</span> <span class="nav-text">起</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#承"><span class="nav-number">2.</span> <span class="nav-text">承</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#方案选择："><span class="nav-number">2.1.</span> <span class="nav-text">方案选择：</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#方案1"><span class="nav-number">2.1.1.</span> <span class="nav-text">方案1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案2"><span class="nav-number">2.1.2.</span> <span class="nav-text">方案2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案3"><span class="nav-number">2.1.3.</span> <span class="nav-text">方案3</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

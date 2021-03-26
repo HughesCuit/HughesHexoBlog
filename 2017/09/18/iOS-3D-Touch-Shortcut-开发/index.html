@@ -1,0 +1,635 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="3D Touch,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="ShortcutItemShortcutItem是苹果在iOS9/iPhone6s发布时添加的新功能，主要利用了新iPhone的3D Touch特性，用户在重压APP图标时，可以弹出设定好的应用程序快捷方式 配置ShortcutItem配置ShortcutItem有两种方式：通过工程info.plist配置文件进行添加和在APP的UIApplication对象中shortcutItems属性中修改">
+<meta name="keywords" content="3D Touch">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS 3D Touch Shortcut 开发">
+<meta property="og:url" content="https://www.hughex.com/2017/09/18/iOS-3D-Touch-Shortcut-开发/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="ShortcutItemShortcutItem是苹果在iOS9/iPhone6s发布时添加的新功能，主要利用了新iPhone的3D Touch特性，用户在重压APP图标时，可以弹出设定好的应用程序快捷方式 配置ShortcutItem配置ShortcutItem有两种方式：通过工程info.plist配置文件进行添加和在APP的UIApplication对象中shortcutItems属性中修改">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.454Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS 3D Touch Shortcut 开发">
+<meta name="twitter:description" content="ShortcutItemShortcutItem是苹果在iOS9/iPhone6s发布时添加的新功能，主要利用了新iPhone的3D Touch特性，用户在重压APP图标时，可以弹出设定好的应用程序快捷方式 配置ShortcutItem配置ShortcutItem有两种方式：通过工程info.plist配置文件进行添加和在APP的UIApplication对象中shortcutItems属性中修改">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> iOS 3D Touch Shortcut 开发 | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                iOS 3D Touch Shortcut 开发
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-09-18T18:12:42+09:00" content="2017-09-18">
+              2017-09-18
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/09/18/iOS-3D-Touch-Shortcut-开发/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/09/18/iOS-3D-Touch-Shortcut-开发/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="ShortcutItem"><a href="#ShortcutItem" class="headerlink" title="ShortcutItem"></a>ShortcutItem</h1><p><code>ShortcutItem</code>是苹果在<code>iOS9</code>/<code>iPhone6s</code>发布时添加的新功能，主要利用了新iPhone的3D Touch特性，用户在重压APP图标时，可以弹出设定好的应用程序快捷方式</p>
+<h1 id="配置ShortcutItem"><a href="#配置ShortcutItem" class="headerlink" title="配置ShortcutItem"></a>配置ShortcutItem</h1><p>配置<code>ShortcutItem</code>有两种方式：通过工程<code>info.plist</code>配置文件进行添加和在APP的<code>UIApplication</code>对象中<code>shortcutItems</code>属性中修改。笔者下面将对其逐一介绍。</p>
+<h2 id="info-plist配置"><a href="#info-plist配置" class="headerlink" title="info.plist配置"></a>info.plist配置</h2><p>在<code>info.plist</code>中添加如下的配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItems<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">array</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--  项目Bundle中的Image Name名称，对应Shortcut右侧的图标，注意，建议使用单色、透明的png --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemIconFile<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>open-favorites<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 必须指定，Shortcut的标题，支持i18n --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemTitle<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>Favorites<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 必须指定，用于区别ShortcutItem --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemType<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.mycompany.myapp.openfavorites<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- userinfo 可以带相应的自定义信息，以字典形式传入 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemUserInfo<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">key</span>&gt;</span>key1<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>value1<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- Shortcut的图标，如果没有设置IconFile可以选择系统预设的图标，种类还算比较多</span></span><br><span class="line"><span class="comment">            具体参见 https://developer.apple.com/documentation/uikit/uiapplicationshortcuticontype --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemIconType<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>UIApplicationShortcutIconTypeCompose<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemTitle<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>New Message<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 可以指定Shortcut的子标题 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemSubtitle<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>You Can Insert New Message<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemType<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">string</span>&gt;</span>com.mycompany.myapp.newmessage<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">key</span>&gt;</span>UIApplicationShortcutItemUserInfo<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">key</span>&gt;</span>key2<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">string</span>&gt;</span>value2<span class="tag">&lt;/<span class="name">string</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>通过上面的配置，一个程序中固定的<code>Shortcut</code>就可以配置完成了。</p>
+<h2 id="通过UIApplication配置"><a href="#通过UIApplication配置" class="headerlink" title="通过UIApplication配置"></a>通过UIApplication配置</h2><p>一般情况下，我们会在<code>AppDelegate</code>下，<code>application(_ application: didFinishLaunchingWithOptions:)</code>方法中添加</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">application.shortcutItems = []</span><br><span class="line"></span><br><span class="line">application.shortcutItems = [<span class="type">UIApplicationShortcutItem</span>(type: &lt;#<span class="type">T</span>##<span class="type">String</span>#&gt;, localizedTitle: &lt;#<span class="type">T</span>##<span class="type">String</span>#&gt;, localizedSubtitle: &lt;#<span class="type">T</span>##<span class="type">String?</span>#&gt;, icon: &lt;#<span class="type">T</span>##<span class="type">UIApplicationShortcutIcon?</span>#&gt;, userInfo: &lt;#<span class="type">T</span>##[<span class="type">AnyHashable</span> : <span class="type">Any</span>]?#&gt;)]</span><br><span class="line"></span><br><span class="line">application.shortcutItems?.append(<span class="type">UIApplicationShortcutItem</span>(type: &lt;#<span class="type">T</span>##<span class="type">String</span>#&gt;, localizedTitle: &lt;#<span class="type">T</span>##<span class="type">String</span>#&gt;, localizedSubtitle: &lt;#<span class="type">T</span>##<span class="type">String?</span>#&gt;, icon: &lt;#<span class="type">T</span>##<span class="type">UIApplicationShortcutIcon?</span>#&gt;, userInfo: &lt;#<span class="type">T</span>##[<span class="type">AnyHashable</span> : <span class="type">Any</span>]?#&gt;))</span><br></pre></td></tr></table></figure>
+<p>如上这样的代码即可添加。</p>
+<p>这样做看起来比在配置文件中进行添加要快和简单许多，而且使用代码管理也显得清晰明了，但这样的坏处就是应用程序在安装或更新后，新的ShortcutItem需要程序先启动一次，并且执行了配置的代码后才能被添加到程序中，而使用配置文件则不需要，它在安装时就已经写入了配置。</p>
+<p>而是用代码添加的好处是可以根据应用程序的不同状态来更改不同的<code>Shortcut</code>设置，所以实际使用中，这两种方法可能会搭配使用</p>
+<h1 id="响应ShortcutItem配置"><a href="#响应ShortcutItem配置" class="headerlink" title="响应ShortcutItem配置"></a>响应ShortcutItem配置</h1><p>上面我们为App添加了ShortcutItem配置，剩下的我们需要做的就是，根据不同的ShortcutItem执行不同的逻辑，我们只需要在<code>AppDelegate</code>中实现<code>application(_ application:performActionFor:completionHandler:</code>方法，在这个方法中去获取<code>shortcutItem</code>对象并执行相应逻辑即可。</p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/3D-Touch/" rel="tag">#3D Touch</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/07/05/Custom-Keyboard-Extension-的屁事博-在Container-App-中植入键盘-二/" rel="next" title="Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)">
+                <i class="fa fa-chevron-left"></i> Custom Keyboard Extension 的屁事博 -- 在Container App 中植入键盘(二)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/" rel="prev" title="使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API">
+                使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/09/18/iOS-3D-Touch-Shortcut-开发/" data-title="iOS 3D Touch Shortcut 开发" data-url="https://www.hughex.com/2017/09/18/iOS-3D-Touch-Shortcut-开发/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ShortcutItem"><span class="nav-number">1.</span> <span class="nav-text">ShortcutItem</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置ShortcutItem"><span class="nav-number">2.</span> <span class="nav-text">配置ShortcutItem</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#info-plist配置"><span class="nav-number">2.1.</span> <span class="nav-text">info.plist配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#通过UIApplication配置"><span class="nav-number">2.2.</span> <span class="nav-text">通过UIApplication配置</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#响应ShortcutItem配置"><span class="nav-number">3.</span> <span class="nav-text">响应ShortcutItem配置</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

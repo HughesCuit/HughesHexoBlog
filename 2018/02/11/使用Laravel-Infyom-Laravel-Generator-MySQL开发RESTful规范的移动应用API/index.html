@@ -1,0 +1,648 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="php,服务器,laravel,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="命名驼峰规则由于涉及到多种格式规范的命名，我们约定在PHP代码中:类名及静态方法的命名使用大驼峰规则，即AaaBbbCcc格式，而变量和实例方法的命名使用使用小驼峰规则，即aaaBbbCcc格式。 下划线命名除PHP程序代码使用驼峰规则，我们在下述几种情况下使用下划线命名，即单词均为纯小写，单词之间使用下划线分隔(aaa_bbb_ccc)。 使用下划线命名的情况包括：  数据库表名 数据库字段 R">
+<meta name="keywords" content="php,服务器,laravel">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API">
+<meta property="og:url" content="https://www.hughex.com/2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="命名驼峰规则由于涉及到多种格式规范的命名，我们约定在PHP代码中:类名及静态方法的命名使用大驼峰规则，即AaaBbbCcc格式，而变量和实例方法的命名使用使用小驼峰规则，即aaaBbbCcc格式。 下划线命名除PHP程序代码使用驼峰规则，我们在下述几种情况下使用下划线命名，即单词均为纯小写，单词之间使用下划线分隔(aaa_bbb_ccc)。 使用下划线命名的情况包括：  数据库表名 数据库字段 R">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.455Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API">
+<meta name="twitter:description" content="命名驼峰规则由于涉及到多种格式规范的命名，我们约定在PHP代码中:类名及静态方法的命名使用大驼峰规则，即AaaBbbCcc格式，而变量和实例方法的命名使用使用小驼峰规则，即aaaBbbCcc格式。 下划线命名除PHP程序代码使用驼峰规则，我们在下述几种情况下使用下划线命名，即单词均为纯小写，单词之间使用下划线分隔(aaa_bbb_ccc)。 使用下划线命名的情况包括：  数据库表名 数据库字段 R">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> 使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-02-11T16:46:00+09:00" content="2018-02-11">
+              2018-02-11
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><h3 id="驼峰规则"><a href="#驼峰规则" class="headerlink" title="驼峰规则"></a>驼峰规则</h3><p>由于涉及到多种格式规范的命名，我们约定在<code>PHP</code>代码中:<code>类</code>名及<code>静态方法</code>的命名使用<strong><em>大驼峰规则</em></strong>，即<code>AaaBbbCcc</code>格式，而<code>变量</code>和<code>实例方法</code>的命名使用使用<strong><em>小驼峰规则</em></strong>，即<code>aaaBbbCcc</code>格式。</p>
+<h3 id="下划线命名"><a href="#下划线命名" class="headerlink" title="下划线命名"></a>下划线命名</h3><p>除PHP程序代码使用<code>驼峰规则</code>，我们在下述几种情况下使用<code>下划线命名</code>，即单词均为<strong><em>纯小写</em></strong>，单词之间使用<strong><em>下划线</em></strong>分隔(<code>aaa_bbb_ccc</code>)。</p>
+<p>使用下划线命名的情况包括：</p>
+<ol>
+<li>数据库表名</li>
+<li>数据库字段</li>
+<li>RESTful API返回值<code>key</code>名</li>
+<li>RESTful API请求参数名</li>
+</ol>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="安装composer"><a href="#安装composer" class="headerlink" title="安装composer"></a>安装composer</h3><p><a href="https://getcomposer.org/download/" target="_blank" rel="noopener">官网</a><br>composer用来做包管理器</p>
+<h3 id="安装Laravel"><a href="#安装Laravel" class="headerlink" title="安装Laravel"></a>安装Laravel</h3><p>下载安装程序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer global require &quot;laravel/installer&quot;</span><br></pre></td></tr></table></figure>
+<p>确保 $HOME/.composer/vendor/bin 目录（或你的操作系统的等效目录）已经放在你的环境变量 $PATH 中，以便系统可以找到 laravel 的可执行文件。</p>
+<h3 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h3><h4 id="通过Laravel"><a href="#通过Laravel" class="headerlink" title="通过Laravel"></a>通过Laravel</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">laravel new 你的项目</span><br></pre></td></tr></table></figure>
+<p>将自动帮你创建目录，以及安装<code>Laravel</code>的依赖。</p>
+<h4 id="通过composer"><a href="#通过composer" class="headerlink" title="通过composer"></a>通过composer</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer create-project --prefer-dist laravel/laravel 你的项目</span><br></pre></td></tr></table></figure>
+<h3 id="Infyom-Laravel-Generator"><a href="#Infyom-Laravel-Generator" class="headerlink" title="Infyom Laravel Generator"></a>Infyom Laravel Generator</h3><p>默认到此步骤，已完成数据库连接的配置。</p>
+<p>此处可以通过<code>Infyom Laravel Generator</code>来生成<code>Model</code>、<code>Controller</code>、<code>API</code>等模板代码</p>
+<h4 id="生成Model"><a href="#生成Model" class="headerlink" title="生成Model"></a>生成Model</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan infyom:model 模型名称 --fromTable --tableName=数据库表名</span><br></pre></td></tr></table></figure>
+<h4 id="生成API"><a href="#生成API" class="headerlink" title="生成API"></a>生成API</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan infyom:api 模型名称 --fromTable --tableName=数据库表名</span><br></pre></td></tr></table></figure>
+<h4 id="生成脚手架"><a href="#生成脚手架" class="headerlink" title="生成脚手架"></a>生成脚手架</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan infyom:scaffold 模型名称 --fromTable --tableName=数据库表名</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag">#php</a>
+          
+            <a href="/tags/服务器/" rel="tag">#服务器</a>
+          
+            <a href="/tags/laravel/" rel="tag">#laravel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/18/iOS-3D-Touch-Shortcut-开发/" rel="next" title="iOS 3D Touch Shortcut 开发">
+                <i class="fa fa-chevron-left"></i> iOS 3D Touch Shortcut 开发
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/30/在ESXi6.5上安装macOS 10.13.6虚拟系统/" rel="prev" title="在ESXi6.5上安装macOS 10.13.6虚拟系统">
+                在ESXi6.5上安装macOS 10.13.6虚拟系统 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/" data-title="使用Laravel + Infyom Laravel Generator + MySQL开发RESTful规范的移动应用API" data-url="https://www.hughex.com/2018/02/11/使用Laravel-Infyom-Laravel-Generator-MySQL开发RESTful规范的移动应用API/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#命名"><span class="nav-number">1.</span> <span class="nav-text">命名</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#驼峰规则"><span class="nav-number">1.1.</span> <span class="nav-text">驼峰规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下划线命名"><span class="nav-number">1.2.</span> <span class="nav-text">下划线命名</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装composer"><span class="nav-number">2.1.</span> <span class="nav-text">安装composer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Laravel"><span class="nav-number">2.2.</span> <span class="nav-text">安装Laravel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建项目"><span class="nav-number">2.3.</span> <span class="nav-text">创建项目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通过Laravel"><span class="nav-number">2.3.1.</span> <span class="nav-text">通过Laravel</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过composer"><span class="nav-number">2.3.2.</span> <span class="nav-text">通过composer</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Infyom-Laravel-Generator"><span class="nav-number">2.4.</span> <span class="nav-text">Infyom Laravel Generator</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#生成Model"><span class="nav-number">2.4.1.</span> <span class="nav-text">生成Model</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成API"><span class="nav-number">2.4.2.</span> <span class="nav-text">生成API</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成脚手架"><span class="nav-number">2.4.3.</span> <span class="nav-text">生成脚手架</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>

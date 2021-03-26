@@ -1,0 +1,661 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=0.5.0" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="iOS项目-钱花哪了,">
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="HugheX" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=0.5.0">
+
+
+
+
+
+
+<meta name="description" content="显示Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles Yes &amp;amp;&amp;amp; killall Finder 隐藏Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles No &amp;amp;&amp;amp; killall Finder git全局配置文件：~/.gitconfi">
+<meta name="keywords" content="iOS项目-钱花哪了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git的使用">
+<meta property="og:url" content="https://www.hughex.com/2015/11/06/Git的使用/index.html">
+<meta property="og:site_name" content="HugheX">
+<meta property="og:description" content="显示Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles Yes &amp;amp;&amp;amp; killall Finder 隐藏Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles No &amp;amp;&amp;amp; killall Finder git全局配置文件：~/.gitconfi">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/6b7d44cfgw1exr2ms8xyuj215o0nbae0.jpg">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/6b7d44cfgw1exr32gfvu7j20ep0jtdhk.jpg">
+<meta property="og:updated_time" content="2019-07-03T01:33:09.453Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git的使用">
+<meta name="twitter:description" content="显示Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles Yes &amp;amp;&amp;amp; killall Finder 隐藏Mac隐藏文件：defaults write com.apple.finder AppleShowAllFiles No &amp;amp;&amp;amp; killall Finder git全局配置文件：~/.gitconfi">
+<meta name="twitter:image" content="http://ww2.sinaimg.cn/large/6b7d44cfgw1exr2ms8xyuj215o0nbae0.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+  <link rel="manifest" href="/manifest.json">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-143696938-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-143696938-1');
+</script>
+
+  <title> Git的使用 | HugheX </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">HugheX</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">没有银弹，或者每发都是银弹</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-th fa-fw"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Git的使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-11-06T13:37:16+09:00" content="2015-11-06">
+              2015-11-06
+            </time>
+          </span>
+
+          
+            <span class="post-category">
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/开发日常/" itemprop="url" rel="index">
+                    <span itemprop="name">开发日常</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/11/06/Git的使用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/06/Git的使用/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="显示Mac隐藏文件："><a href="#显示Mac隐藏文件：" class="headerlink" title="显示Mac隐藏文件："></a>显示Mac隐藏文件：</h1><pre><code>defaults write com.apple.finder AppleShowAllFiles Yes &amp;&amp; killall Finder
+</code></pre><h1 id="隐藏Mac隐藏文件："><a href="#隐藏Mac隐藏文件：" class="headerlink" title="隐藏Mac隐藏文件："></a>隐藏Mac隐藏文件：</h1><pre><code>defaults write com.apple.finder AppleShowAllFiles No &amp;&amp; killall Finder
+</code></pre><h1 id="git全局配置文件："><a href="#git全局配置文件：" class="headerlink" title="git全局配置文件："></a>git全局配置文件：</h1><pre><code>~/.gitconfig
+</code></pre><a id="more"></a>
+<h1 id="git主要指令学习"><a href="#git主要指令学习" class="headerlink" title="git主要指令学习"></a>git主要指令学习</h1><ol>
+<li>git status 查看仓库当前状态</li>
+<li>git add . 添加文件到“暂存区”</li>
+<li>git commit -m “注释” 文件添加文件到本地仓库</li>
+<li>git log 查看当前版本</li>
+<li>git reflog 查看所有修改版本</li>
+<li>git clone 远程仓库地址 克隆远程仓库</li>
+<li>未提交的反悔：git reset –hard HEAD</li>
+<li>配置带颜色的log别名 git config –global alias.lg “log –color –graph –pretty=format:’%Cred%h%Creset - %C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)&lt;%an&gt;%Creset’ –abbrev-commit” </li>
+<li><p>git reset 版本回滚</p>
+<pre><code>1) 回滚到上一个版本: git reset --hard HEAD^
+2) 回滚到上上一个版本: git reset --hard HEAD^^
+3) 回滚到上N个版本: git reset --hard HEAD~N(N是一个整数)
+4) 回滚到任意一个版本: git reset ––hard 版本号（版本号用7位即可)
+</code></pre><h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><pre><code>5) git branch -r 查看远程分支
+6) git branch dev       创建分支dev分支
+   7）it checkout dev       切换到dev分支
+   8）git branch -r -d origin/bugfix1.0 删除远程分支
+  9）git branch   查看分支
+  10）git merge dev
+</code></pre><h3 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h3><pre><code>1）git tag  查看当前标签
+   2)git tag -a v1.0 -m &apos;Version 1.0’ 在本地代码库给项目打上一个标签，之后记得push到服务器
+   3)git push origin v1.0  将标签添推送到远程代码库中
+   4)git checkout v1.0  签出v1.0标签
+   5)git checkout -b bugfix1.0 从签出状态创建v1.0bugfix分支
+</code></pre></li>
+</ol>
+<h1 id="代码托管网站"><a href="#代码托管网站" class="headerlink" title="代码托管网站"></a>代码托管网站</h1><p> 远程服务器仓库的搭建</p>
+<h3 id="国外"><a href="#国外" class="headerlink" title="国外"></a>国外</h3><pre><code>1、https://github.com
+</code></pre><h3 id="国内"><a href="#国内" class="headerlink" title="国内"></a>国内</h3><pre><code>   1、https://git.oschina.net 
+   网速较国外快，可以添加私有库
+中文，容易看懂
+     2、https://coding.net/
+</code></pre><h1 id="项目创建"><a href="#项目创建" class="headerlink" title="项目创建"></a>项目创建</h1><p><img src="http://ww2.sinaimg.cn/large/6b7d44cfgw1exr2ms8xyuj215o0nbae0.jpg" alt="1"><br><img src="http://ww3.sinaimg.cn/large/6b7d44cfgw1exr32gfvu7j20ep0jtdhk.jpg" alt="2"></p>
+
+      
+    </div>
+    
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS项目-钱花哪了/" rel="tag">#iOS项目-钱花哪了</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/09/RAC-Reactive-Cocoa/" rel="prev" title="ReactiveCocoa(RAC)">
+                ReactiveCocoa(RAC) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+      <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+      <script src="https://cdn.bootcss.com/blueimp-md5/2.10.0/js/md5.js"></script>
+      <div id="gitalk-container"></div>
+      <script type="text/javascript">
+        var gitalk = new Gitalk({
+        clientID: '456b7bee7686c5872166',
+        clientSecret: '267e3fb4e6cd01ca8033d3826040dad1a9d55c33',
+        repo: 'HughesHexoBlog',
+        owner: 'HughesCuit',
+        admin: ['HughesCuit'],
+        id: md5(location.href),      // Ensure uniqueness and length less than 50
+        distractionFreeMode: false  // Facebook-like distraction free mode
+      })
+
+      gitalk.render('gitalk-container')
+      </script>
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2015/11/06/Git的使用/" data-title="Git的使用" data-url="https://www.hughex.com/2015/11/06/Git的使用/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/uploads/newHead.jpg" alt="Hughes">
+          <p class="site-author-name" itemprop="name">Hughes</p>
+          <p class="site-description motion-element" itemprop="description">不想编码</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">25</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+          <a href="https://github.com/HughesCuit" rel="me">Github</a>
+        </div>
+
+        
+        
+
+        
+        <div class="links-of-blogroll motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#显示Mac隐藏文件："><span class="nav-number">1.</span> <span class="nav-text">显示Mac隐藏文件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#隐藏Mac隐藏文件："><span class="nav-number">2.</span> <span class="nav-text">隐藏Mac隐藏文件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git全局配置文件："><span class="nav-number">3.</span> <span class="nav-text">git全局配置文件：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#git主要指令学习"><span class="nav-number">4.</span> <span class="nav-text">git主要指令学习</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分支"><span class="nav-number">4.0.1.</span> <span class="nav-text">分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#标签"><span class="nav-number">4.0.2.</span> <span class="nav-text">标签</span></a></li></ol></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#代码托管网站"><span class="nav-number">5.</span> <span class="nav-text">代码托管网站</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#国外"><span class="nav-number">5.0.1.</span> <span class="nav-text">国外</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#国内"><span class="nav-number">5.0.2.</span> <span class="nav-text">国内</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#项目创建"><span class="nav-number">6.</span> <span class="nav-text">项目创建</span></a></li></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-3854283911211062",
+      enable_page_level_ads: true
+    });
+  </script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hughes</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+<div>
+<span id="busuanzi_container_site_uv">
+  本站访客数<span id="busuanzi_value_site_uv"></span>人次
+</span>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+
+  
+
+
+
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=0.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=0.5.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=0.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=0.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=0.5.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hughex"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+  
+
+
+
+
+
+  
+  
+  
+
+  
+
+  
+
+</body>
+</html>
